@@ -69,10 +69,10 @@ fn main() {
     //
     // In any case test if zlib is actually installed and if so we link to it,
     // otherwise continue below to build things.
-    if zlib_installed(&mut cfg) {
-        println!("cargo:rustc-link-lib=z");
-        return
-    }
+    // if zlib_installed(&mut cfg) {
+    //     println!("cargo:rustc-link-lib=z");
+    //     return;
+    // }
 
     build_zlib(&mut cfg, &target)
 }
@@ -82,11 +82,10 @@ fn build_zlib(cfg: &mut cc::Build, target: &str) {
     let build = dst.join("build");
     let asm = cfg!(feature = "asm");
 
-    cfg.warnings(false)
-        .out_dir(&build)
-        .include("src/zlib");
+    cfg.warnings(false).out_dir(&build).include("src/zlib");
 
     cfg.file("src/zlib/adler32.c")
+        .static_crt(true)
         .file("src/zlib/compress.c")
         .file("src/zlib/crc32.c")
         .file("src/zlib/deflate.c")
